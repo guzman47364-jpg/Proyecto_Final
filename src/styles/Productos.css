@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* El resto de tus estilos igual que antes */
+.shop-wrapper {
+    @apply bg-gray-50 min-h-screen py-8 px-4;
+}
+
+.productos-grid {
+    @apply max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+}
+
+.producto-card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden 
+           hover:shadow-xl transition-all duration-300 flex flex-col h-full;
+}
+
+.producto-img-placeholder {
+    @apply h-48 bg-gray-100 flex items-center justify-center text-4xl;
+}
+
+.producto-info {
+    @apply p-5 flex flex-col flex-grow;
+}
+
+.btn-compra {
+    @apply bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg 
+           transition-all active:scale-95 shadow-md shadow-teal-100;
+}
+
+.tag-categoria {
+    @apply bg-teal-50 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase;
+}
+
+/* Añade esto a tu Productos.css */
+
+.hero-tienda {
+    @apply bg-white py-16 px-4 text-center border-b border-gray-50 mb-10;
+}
+
+.titulo-hero {
+    @apply text-5xl font-black text-gray-900 tracking-tight mb-4;
+}
+
+.subtitulo-hero {
+    @apply text-gray-500 text-lg max-w-2xl mx-auto;
+}
+
+/* Ajuste para que los productos no se vean tan solos si hay pocos */
+.productos-grid {
+    @apply max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 px-4 pb-20;
+}

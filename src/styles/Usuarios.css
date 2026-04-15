@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+.admin-container {
+    @apply max-w-7xl mx-auto p-6 md:p-10;
+}
+
+.table-wrapper {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden;
+}
+
+.admin-table {
+    @apply w-full border-collapse text-left;
+}
+
+.admin-table th {
+    @apply bg-gray-50 px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest;
+}
+
+.admin-table td {
+    @apply px-6 py-4 border-t border-gray-100 text-sm text-gray-700;
+}
+
+.badge-role {
+    @apply px-2 py-1 rounded-md text-[10px] font-black uppercase bg-teal-100 text-teal-700;
+}
+
+.btn-accion {
+    @apply text-xs font-bold uppercase transition-colors px-3 py-1 rounded-lg;
+}

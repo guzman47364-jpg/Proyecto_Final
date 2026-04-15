@@ -1,63 +1,48 @@
-import { useState } from 'react';
-import Marcas from './components/Marcas';
-import Productos from './components/Productos';
-import Categorias from './components/Categorias';
-import Proveedores from './components/Proveedores';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from './context/AuthContext';
+
+import Navbar from './components/Navbar';
+import AdminLayout from './layouts/AdminLayout'; // Importamos el Layout
+import { ProtectedRoute } from './components/ProtectedRoute';
+
+import Login from './pages/auth/Login';
+import Productos from './pages/shop/Productos';
+import Usuarios from './pages/admin/Usuarios';
+import Proveedores from './pages/admin/Proveedores';
+import Categorias from './pages/admin/Categorias';
+import Marcas from './pages/admin/Marcas';
 
 function App() {
-  const [vista, setVista] = useState('productos');
+  const { user } = useContext(AuthContext);
 
   return (
-    <div className="app-container">
-      {/* Navbar Corregido con Proveedores */}
-      <nav className="navbar">
-        <div className="nav-content">
-          <div className="logo-section">
-            <div className="logo-box">P</div>
-            <h1 className="logo-text">Control<span>Stock</span></h1>
-          </div>
+    <Routes>
+      {/* --- RUTA DE LA TIENDA (Con Navbar) --- */}
+      <Route path="/shop" element={<><Navbar /><Productos /></>} />
+      
+      {/* --- RUTA DE LOGIN (Sin Navbar o con Navbar, tú eliges) --- */}
+      // App.jsx
+    <Route path="/login" element={<><Navbar /><Login /></>} />
 
-          <div className="nav-links">
-            <button 
-              onClick={() => setVista('productos')} 
-              className={vista === 'productos' ? 'nav-btn active' : 'nav-btn'}
-            >
-              Productos
-            </button>
-            <button 
-              onClick={() => setVista('marcas')} 
-              className={vista === 'marcas' ? 'nav-btn active' : 'nav-btn'}
-            >
-              Marcas
-            </button>
-            <button 
-              onClick={() => setVista('categorias')} 
-              className={vista === 'categorias' ? 'nav-btn active' : 'nav-btn'}
-            >
-              Categorías
-            </button>
-            {/* NUEVO BOTÓN PARA PROVEEDORES */}
-            <button 
-              onClick={() => setVista('proveedores')} 
-              className={vista === 'proveedores' ? 'nav-btn active' : 'nav-btn'}
-            >
-              Proveedores
-            </button>
-          </div>
-        </div>
-      </nav>
+      {/* --- RUTAS DE ADMINISTRACIÓN (Con Sidebar y Protegidas) --- */}
+      <Route path="/admin" element={
+        <ProtectedRoute allowedRoles={['Admin']}>
+          <AdminLayout />
+        </ProtectedRoute>
+      }>
+        {/* Rutas Hijas que se verán dentro del AdminLayout */}
+        <Route path="usuarios" element={<Usuarios />} />
+        <Route path="categorias" element={<Categorias />} />
+        <Route path="marcas" element={<Marcas />} />
+        <Route path="proveedores" element={<Proveedores />} />
+        <Route path="inventario" element={<Productos />} />
+      </Route>
 
-      {/* Main ajustado con la nueva vista */}
-      <main className="main-content">
-        <div className="card-container">
-           {vista === 'productos' && <Productos />}
-           {vista === 'marcas' && <Marcas />}
-           {vista === 'categorias' && <Categorias />}
-           {/* NUEVA VISTA PARA PROVEEDORES */}
-           {vista === 'proveedores' && <Proveedores />}
-        </div>
-      </main>
-    </div>
+      {/* --- REDIRECCIÓN Y ERRORES --- */}
+      <Route path="/" element={<Navigate to="/shop" />} />
+      <Route path="*" element={<div className="p-20 text-center font-bold text-gray-400">404 - No encontrado</div>} />
+    </Routes>
   );
 }
 

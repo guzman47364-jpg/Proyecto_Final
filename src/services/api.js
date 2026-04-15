@@ -8,18 +8,13 @@ const api = axios.create({
     }
 });
 
-// --- EL PASO QUE FALTA: EL INTERCEPTOR ---
+// Interceptor para inyectar el token en cada petición
 api.interceptors.request.use(
     (config) => {
-        // 1. Buscamos el token en el LocalStorage
-        // IMPORTANTE: Asegúrate de que en tu Login uses 'token' para guardar
-        const token = localStorage.getItem('token'); 
-
-        // 2. Si el token existe, se lo inyectamos al Header
+        const token = localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-        
         return config;
     },
     (error) => {

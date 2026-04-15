@@ -1,0 +1,33 @@
+/* src/styles/Navbar.css */
+@import "tailwindcss";
+
+.nav-tienda {
+    @apply bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm w-full;
+}
+
+.nav-content {
+    @apply max-w-7xl mx-auto flex justify-between items-center h-16 px-6;
+}
+
+.nav-links {
+    @apply hidden md:flex gap-6 text-sm font-medium text-gray-500;
+}
+
+.nav-links a {
+    @apply hover:text-teal-500 transition-colors;
+}
+
+.nav-usuario-esquina {
+    @apply flex items-center gap-4;
+}
+
+.btn-acceso {
+    @apply bg-gray-900 text-white px-5 py-2 rounded-lg text-xs font-bold 
+           hover:bg-teal-600 transition-all shadow-sm active:scale-95;
+}
+
+/* Estilo para el contador del carrito */
+.cart-badge {
+    @apply absolute -top-1 -right-1 bg-red-500 text-white text-[10px] 
+           font-bold px-1.5 py-0.5 rounded-full shadow-sm;
+}
