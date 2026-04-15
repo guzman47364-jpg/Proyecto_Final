@@ -9,17 +9,22 @@ class Producto extends Model
 {
     use HasFactory;
 
-    // REVISA QUE ESTÉN ESTOS 5 CAMPOS AQUÍ:
     protected $fillable = [
-        'nombre', 
-        'precio', 
-        'stock', 
-        'marca_id', 
-        'categoria_id',
-        'proveedor_id'
-    ];
+    'user_id',      // El vendedor
+    'nombre', 
+    'descripcion',
+    'precio', 
+    'stock',        // El inventario
+    'marca_id', 
+    'categoria_id',
+    'proveedor_id'
+];
+    // Relación con el Vendedor (Usuario)
+    public function vendedor() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
-    // Relaciones
+    // Relaciones existentes
     public function marca() {
         return $this->belongsTo(Marca::class);
     }
@@ -27,7 +32,8 @@ class Producto extends Model
     public function categoria() {
         return $this->belongsTo(Categoria::class);
     }
+
     public function proveedor() {
-    return $this->belongsTo(Proveedor::class);
+        return $this->belongsTo(Proveedor::class);
     }
 }

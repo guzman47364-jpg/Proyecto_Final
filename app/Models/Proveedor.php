@@ -9,6 +9,12 @@ class Proveedor extends Model
 {
     use HasFactory;
 
-    protected $table = 'proveedors'; // Laravel por defecto pluraliza así, confirma en tu migrate
-    protected $fillable = ['nombre', 'contacto']; 
+    protected $table = 'proveedores'; // El plural correcto en español
+
+    // Solo los campos que existen en tu tabla
+    protected $fillable = [
+        'nombre', 
+        'telefono', 
+        'estado'
+    ]; 
 }

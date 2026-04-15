@@ -50,13 +50,14 @@ class UserController extends Controller
             ];
 
             $userData = $user->map(function($row){
-                return [
-                    'id' => $row->id,
-                    'name'=> $row->name,
-                    'email' => $row->email
-                ];
-            });
-           return $this->success('Lista de usuarios',200,$userData, $pagination);
+                    return [
+                        'id'    => $row->id,
+                        'name'  => $row->name,
+                        'email' => $row->email,
+                        'roles' => $row->getRoleNames(), // <--- AGREGA ESTO
+                    ];
+                });
+            return $this->success('Lista de usuarios',200,$userData, $pagination);
         } catch (\Exception $e) {
             //throw $th;
             return $this->error('Error al cargar los usuarios');
@@ -95,7 +96,7 @@ class UserController extends Controller
                 'data' => $user->id
             ]);
             DB::commit();
-
+            Cache::forget("api_users_page_1");
             return $this->success('Usuario creado',200,$user);
         } catch (\Exception $e) {
             //throw $th;
@@ -103,7 +104,66 @@ class UserController extends Controller
             return $e->getMessage();
         }
     }
+public function update(Request $request, $id)
+{
+    try {
+        $user = User::findOrFail($id);
 
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'rol' => 'required'
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        // Solo actualizamos la contraseña si el usuario escribió algo
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        // Actualizamos el rol con Spatie
+        $user->syncRoles([$request->rol]);
+
+        return response()->json(['message' => 'Usuario actualizado correctamente'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error al actualizar: ' . $e->getMessage()], 500);
+    }
+}
+public function destroy($id)
+{
+    try {
+        $user = User::findOrFail($id);
+
+        // Seguridad: Evitar que un Admin se borre a sí mismo
+        if (auth()->id() == $id) {
+            return response()->json([
+                'status' => 403,
+                'message' => 'No puedes eliminar tu propia cuenta'
+            ], 403);
+        }
+
+        // Eliminar roles primero (buena práctica con Spatie)
+        $user->roles()->detach();
+        
+        // Eliminar el usuario
+        $user->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Usuario eliminado correctamente'
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 500,
+            'message' => 'Error al eliminar: ' . $e->getMessage()
+        ], 500);
+    }
+}
     /**
      
      *

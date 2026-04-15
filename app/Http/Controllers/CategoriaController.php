@@ -13,11 +13,17 @@ class CategoriaController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate(['nombre' => 'required|string|max:255']);
-        $categoria = Categoria::create($request->all());
-        return response()->json($categoria, 201);
+{
+    // 1. Verificamos si es Admin (Seguridad extra)
+    if (!auth()->user()->hasRole('Admin')) {
+        return response()->json(['message' => 'No tienes permiso para crear categorías'], 403);
     }
+
+    $request->validate(['nombre' => 'required|string|unique:categorias,nombre|max:255']);
+    
+    $categoria = Categoria::create($request->all());
+    return response()->json($categoria, 201);
+}
 
     public function show(Categoria $categoria)
     {

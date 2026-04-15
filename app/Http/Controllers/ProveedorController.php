@@ -13,14 +13,18 @@ class ProveedorController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'contacto' => 'nullable|string'
-        ]);
-        $proveedor = Proveedor::create($request->all());
-        return response()->json($proveedor, 201);
-    }
+{
+    $request->validate([
+        'nombre'   => 'required|string|max:255',
+        'telefono' => 'nullable|string|max:20',
+        'estado'   => 'boolean' // Para que acepte true/false o 1/0
+    ]);
+
+    // Al usar $request->all(), Laravel solo tomará los campos que pusiste en $fillable
+    $proveedor = Proveedor::create($request->all());
+
+    return response()->json($proveedor, 201);
+}
 
     public function show(Proveedor $proveedor)
     {

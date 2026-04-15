@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleSeeder extends Seeder
 {
@@ -13,49 +13,63 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = ['Super Admin', 'Admin', 'User'];
+        // 1. Definir los Guards
         $guards = ['web', 'api'];
-    
-        // ✅ 1. Crear roles para web y api
-        foreach ($roles as $role) {
-            foreach ($guards as $guard) {
-                Role::firstOrCreate([
-                    'name' => $role,
+
+        // 2. Definir los Permisos de la Tienda
+        $permissions = [
+            // Gestión de Productos
+            'ver_productos', 
+            'crear_productos', 
+            'editar_productos', 
+            'eliminar_productos',
+            
+            // Gestión de Ventas/Carrito
+            'realizar_compra', 
+            'gestionar_ventas', // Para que el vendedor vea sus pedidos recibidos
+            'ver_reportes_globales', // Solo Admin
+            
+            // Gestión de Usuarios
+            'crear_usuario', 
+            'editar_usuario', 
+            'eliminar_usuario', 
+            'ver_usuarios',
+        ];
+
+        // Crear permisos para cada guard
+        foreach ($guards as $guard) {
+            foreach ($permissions as $permission) {
+                Permission::firstOrCreate([
+                    'name' => $permission,
                     'guard_name' => $guard
                 ]);
             }
         }
-    
-        // ✅ 2. Asignar permisos al rol Admin (para ambos guards)
-        $adminPermissions = [
-            'create_permission',
-            'edit_permission',
-            'delete_permission',
-            'view_permission',
-            'create_user',
-            'edit_user',
-            'delete_user',
-            'view_user',
-        ];
-    
+
+        // 3. Crear Roles y Asignar Permisos
         foreach ($guards as $guard) {
-            $adminRole = Role::where('name', 'Admin')->where('guard_name', $guard)->first();
-            if ($adminRole) {
-                $adminRole->syncPermissions($adminPermissions);
-            }
-        }
-    
-        // ✅ 3. Asignar permisos al rol User (para ambos guards)
-        $userPermissions = [
-            'view_permission',
-            'view_user',
-        ];
-    
-        foreach ($guards as $guard) {
-            $userRole = Role::where('name', 'User')->where('guard_name', $guard)->first();
-            if ($userRole) {
-                $userRole->syncPermissions($userPermissions);
-            }
+            
+            // --- ROL: ADMIN (Poder total) ---
+            $adminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => $guard]);
+            $adminRole->syncPermissions(Permission::where('guard_name', $guard)->get());
+
+            // --- ROL: VENDEDOR (Gestión de su inventario y ventas) ---
+            $vendedorRole = Role::firstOrCreate(['name' => 'Vendedor', 'guard_name' => $guard]);
+            $vendedorRole->syncPermissions([
+                'ver_productos',
+                'crear_productos',
+                'editar_productos',
+                'eliminar_productos',
+                'gestionar_ventas',
+                'ver_usuarios', // Para ver quién le compra
+            ]);
+
+            // --- ROL: COMPRADOR (Cliente final) ---
+            $compradorRole = Role::firstOrCreate(['name' => 'Comprador', 'guard_name' => $guard]);
+            $compradorRole->syncPermissions([
+                'ver_productos',
+                'realizar_compra',
+            ]);
         }
     }
 }
