@@ -14,7 +14,7 @@ class CategoriaController extends Controller
 
     public function store(Request $request)
 {
-    // 1. Verificamos si es Admin (Seguridad extra)
+   
     if (!auth()->user()->hasRole('Admin')) {
         return response()->json(['message' => 'No tienes permiso para crear categorías'], 403);
     }

@@ -9,9 +9,9 @@ class Proveedor extends Model
 {
     use HasFactory;
 
-    protected $table = 'proveedores'; // El plural correcto en español
+    protected $table = 'proveedores'; 
 
-    // Solo los campos que existen en tu tabla
+  
     protected $fillable = [
         'nombre', 
         'telefono', 

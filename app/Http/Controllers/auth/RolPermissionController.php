@@ -16,12 +16,7 @@ class RolPermissionController extends Controller
 {
     use ApiResponse;
 
-    //
-     /**
-     
-     *
-     * @operationId Listar roles
-     */
+   
     public function ListRole(){
         try {
             $roles = Role::all();
@@ -32,12 +27,6 @@ class RolPermissionController extends Controller
         }
     }
 
-    //
-     /**
-     
-     *
-     * @operationId Listar Permisos
-     */
     public function ListPermission(){
         try {
             $permissions = Permission::all();
@@ -48,12 +37,7 @@ class RolPermissionController extends Controller
         }
     }
 
-    //
-     /**
-     
-     *
-     * @operationId Crear Permisos
-     */
+    
     public function createPermission(CreatePermissionRequest $request){
         try {
             //code...
@@ -85,11 +69,7 @@ class RolPermissionController extends Controller
         }
     }
 
-    /**
-     
-     *
-     * @operationId Crear Rol
-     */
+   
     public function createRol(CreateRolRequest $request){
         try {
             //code...
@@ -108,14 +88,10 @@ class RolPermissionController extends Controller
             return $this->error('Error al crear el rol ');
         }
     }
-    /**
-     
-     *
-     * @operationId Eliminar Rol
-     */
+   
     public function eliminarRol($id){
         try {
-            //code...
+            
             $rol = Role::find($id);
             if(!$rol){
                 return $this->error('Rol no encontrado',404);
@@ -126,16 +102,12 @@ class RolPermissionController extends Controller
             $rol->delete();
             return $this->success('Rol eliminado',200);
         } catch (\Exception $e) {
-            //throw $th;
+           
             return $this->error('Error al eliminar el rol ');
         }
     }
 
-    /**
-     
-     *
-     * @operationId Eliminar Permiso
-     */
+
     public function eliminarPermisos(AsignarPermisosUsuarioRequest $request){
         try {
             //code...

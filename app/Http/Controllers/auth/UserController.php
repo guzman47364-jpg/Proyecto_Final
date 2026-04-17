@@ -21,18 +21,14 @@ class UserController extends Controller
 {
     //
     use ApiResponse;
-    /**
-     
-     *
-     * @operationId Lista Usuarios
-     */
+  
     public function index(Request $request)
     {
         try {
              // Usamos un cache key único para cada página/filtro
             $page = $request->get('page', 1);
 
-            //ejemplo con cache
+            
            $cacheKey = "api_users_page_{$page}";
 
             $user = CacheHelper::remember($cacheKey,600,function(){
@@ -40,8 +36,7 @@ class UserController extends Controller
             });
 
 
-            //ejemplo sin cache
-            //$user = User::with(['roles'])->paginate(10);
+            
             $pagination = [
                 'lastPage'=>$user->lastPage(),
                 'currentPage'=>$user->currentPage(),
@@ -65,11 +60,7 @@ class UserController extends Controller
        
     }
 
-    /**
-     
-     *
-     * @operationId Crear Usuarios
-     */
+  
     public function createUser(UsersCreateRequest $request){
         DB::beginTransaction();
         try {
@@ -118,14 +109,14 @@ public function update(Request $request, $id)
         $user->name = $request->name;
         $user->email = $request->email;
 
-        // Solo actualizamos la contraseña si el usuario escribió algo
+        
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
 
-        // Actualizamos el rol con Spatie
+       
         $user->syncRoles([$request->rol]);
 
         return response()->json(['message' => 'Usuario actualizado correctamente'], 200);
@@ -146,7 +137,7 @@ public function destroy($id)
             ], 403);
         }
 
-        // Eliminar roles primero (buena práctica con Spatie)
+        
         $user->roles()->detach();
         
         // Eliminar el usuario
@@ -164,11 +155,7 @@ public function destroy($id)
         ], 500);
     }
 }
-    /**
-     
-     *
-     * @operationId Agregar permisos a usuarios
-     */
+ 
    public function AgregarPermisoUsuario(AsignarPermisosUsuarioRequest $request, $userId){
     try {
         DB::beginTransaction();
@@ -190,11 +177,7 @@ public function destroy($id)
         return $this->error("Error al asignar permisos");
     }
    }
-   /**
-    
-    *
-    * @operationId Revocar permisos a usuarios
-    */
+  
    public function RevocarPermisoUsuario(RevocarPermisoUsuarioRequest $request, $userId){
     try {
         DB::beginTransaction();
@@ -212,11 +195,7 @@ public function destroy($id)
     }
    }
 
-   /**
-    
-    *
-    * @operationId Asignar rol a usuarios
-    */
+  
    public function AsignarRolUsuario(AsignarRolUsuarioRequest $request, $userId){
     try {
         DB::beginTransaction();
@@ -231,11 +210,7 @@ public function destroy($id)
     }
    }
    
-   /**
-    
-    *
-    * @operationId Revocar rol a usuarios
-    */
+  
    public function RevocarRolUsuario(RevocarRolUsuarioRequest $request, $userId){
     try {
         DB::beginTransaction();

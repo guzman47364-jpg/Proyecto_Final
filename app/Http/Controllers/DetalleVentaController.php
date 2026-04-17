@@ -7,10 +7,7 @@ use Illuminate\Http\Request;
 
 class DetalleVentaController extends Controller
 {
-    /**
-     * Muestra los detalles de una venta específica.
-     * Útil para cuando en React haces clic en "Ver más" de un pedido.
-     */
+    
     public function showByVenta($ventaId)
     {
         $detalles = DetalleVenta::with('producto')
@@ -24,9 +21,7 @@ class DetalleVentaController extends Controller
         return response()->json($detalles);
     }
 
-    /**
-     * (Opcional) Listado general de movimientos de productos.
-     */
+    
     public function index()
     {
         return DetalleVenta::with(['producto', 'venta.cliente'])->latest()->get();

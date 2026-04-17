@@ -25,7 +25,7 @@ class ProductoController extends Controller
 
     public function store(Request $request)
     {
-        // Validamos los datos básicos
+       
         $request->validate([
             'nombre' => 'required|string',
             'precio' => 'required|numeric',
@@ -35,7 +35,7 @@ class ProductoController extends Controller
         ]);
 
         try {
-            // SEGURIDAD: Forzamos que el user_id sea el del usuario que inició sesión
+            // SEGURIDAD: 
             $data = $request->all();
             $data['user_id'] = Auth::id(); 
 
@@ -59,7 +59,7 @@ class ProductoController extends Controller
         $producto = Producto::findOrFail($id);
         $user = Auth::user();
 
-        // SEGURIDAD: Un vendedor no puede editar productos de otros
+        // SEGURIDAD: 
         if ($user->hasRole('Vendedor') && $producto->user_id !== $user->id) {
             return response()->json(['message' => 'No tienes permiso para editar este producto'], 403);
         }
@@ -73,7 +73,7 @@ class ProductoController extends Controller
         $producto = Producto::findOrFail($id);
         $user = Auth::user();
 
-        // SEGURIDAD: Un vendedor no puede borrar productos de otros
+        // SEGURIDAD: 
         if ($user->hasRole('Vendedor') && $producto->user_id !== $user->id) {
             return response()->json(['message' => 'No tienes permiso para eliminar este producto'], 403);
         }

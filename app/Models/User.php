@@ -14,7 +14,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable, HasRoles;
     use SoftDeletes; 
-    // Esto cargará los roles automáticamente sin errores
+   
     protected $with = ['roles']; 
 
     protected $fillable = [
@@ -44,7 +44,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims() {
         return [
-            // Usamos los métodos directos de Spatie para evitar bucles
+           
             'roles' => $this->getRoleNames(), 
             'permissions' => $this->getPermissionNames(),
             'user' => $this->name,

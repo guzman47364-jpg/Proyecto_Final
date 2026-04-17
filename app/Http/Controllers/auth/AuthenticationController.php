@@ -78,9 +78,7 @@ class AuthenticationController extends Controller
         }
     }
 
-    /**
-     * @operationId Login
-     */
+   
     public function login(Request $request)
     {
         try {
@@ -135,9 +133,7 @@ class AuthenticationController extends Controller
         }
     }
 
-    /**
-     * @operationId RefreshToken
-     */
+
     public function refresh()
     {
         try {
