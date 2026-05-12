@@ -1,0 +1,132 @@
+/* Contenedor Principal */
+@import "tailwindcss";
+
+
+/* 1. Contenedor Principal - Reducimos padding para subir todo */
+.admin-productos-wrapper {
+    @apply p-4 lg:p-6 bg-slate-50 min-h-screen;
+}
+
+/* 2. Tarjeta del Formulario - Más compacta y moderna */
+.form-gestion-card {
+    @apply bg-white rounded-[1.5rem] shadow-sm border border-slate-100 p-6 mb-6 transition-all;
+}
+
+.form-gestion-card h2 {
+    @apply text-xl font-extrabold text-slate-800 mb-6 border-b border-slate-50 pb-3;
+}
+
+/* 3. Rejilla de Inputs - Ajustamos espacios */
+.grid-inputs-admin {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4;
+}
+
+.campo-admin {
+    @apply flex flex-col gap-1;
+}
+
+.campo-admin label {
+    @apply text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-0.5;
+}
+
+/* 4. Inputs y Selects - Menos altura (py-2.5) y bordes más finos */
+.input-admin, .select-admin {
+    @apply w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 
+           text-sm text-slate-700 font-medium transition-all duration-200
+           focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-50 outline-none;
+}
+
+/* Select personalizado refinado */
+.select-admin {
+    @apply w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 
+           text-sm text-slate-700 font-medium cursor-pointer transition-all duration-300
+           focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-50 outline-none;
+    
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.2em;
+}
+
+/* TRUCO PARA EL SCROLL:
+   El elemento nativo <select> no permite limitar la altura del desplegable por CSS.
+   La mejor forma de "limpiar" visualmente sin librerías externas es usar 
+   el atributo 'size' dinámicamente o aplicar estos estilos de fuente:
+*/
+
+.select-admin option {
+    @apply bg-white text-slate-700 py-3 px-4 text-sm font-medium;
+    /* Esto ayuda a que el texto interno se vea más limpio */
+}
+
+/* Para que no se vea tan largo y feo al abrirse, 
+   podemos forzar que el navegador use un renderizado más moderno: 
+*/
+.select-admin:focus {
+    @apply shadow-lg shadow-teal-100/50;
+}
+.campo-admin {
+    @apply flex flex-col gap-1;
+    position: relative; /* Mantiene el flujo controlado */
+}
+
+.select-admin {
+    /* ... tus estilos anteriores ... */
+    z-index: 20; /* Asegura que al abrirse quede por encima de otros elementos */
+}
+
+/* Estilo para la barra de scroll (solo navegadores Webkit como Chrome/Edge) */
+.select-admin::-webkit-scrollbar {
+    width: 8px;
+}
+
+.select-admin::-webkit-scrollbar-track {
+    @apply bg-slate-100 rounded-full;
+}
+
+.select-admin::-webkit-scrollbar-thumb {
+    @apply bg-teal-400 rounded-full border-2 border-slate-100;
+}
+
+.textarea-admin {
+    @apply w-full bg-slate-50 border border-slate-100 rounded-xl p-4 min-h-[80px] max-h-[100px] text-sm
+           focus:bg-white focus:border-teal-400 outline-none transition-all;
+}
+
+/* 6. Botón de Guardar - Estilo "Action Button" menos ruidoso */
+.btn-guardar-admin {
+    @apply w-full bg-teal-500 hover:bg-teal-600 text-white font-black py-3.5 rounded-xl 
+           text-sm uppercase tracking-widest mt-4 transition-all shadow-md shadow-teal-100 active:scale-[0.97];
+}
+
+/* 7. Tabla de Gestión - Refinada para que luzca el contenido */
+.tabla-gestion-container {
+    @apply bg-white rounded-[1.5rem] p-4 shadow-sm border border-slate-100;
+}
+
+.tabla-productos-admin {
+    @apply w-full border-separate border-spacing-y-2;
+}
+
+.tabla-productos-admin thead th {
+    @apply px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-left;
+}
+
+.tabla-productos-admin td {
+    @apply px-4 py-3 text-sm font-semibold text-slate-600 border-y border-transparent;
+}
+
+/* Resaltamos el nombre del producto para lectura rápida */
+.nombre-producto-resaltado {
+    @apply text-slate-900 font-bold text-base;
+}
+
+/* Badges de Stock dinámicos */
+.stock-badge {
+    @apply px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold;
+}
+
+.stock-badge.low {
+    @apply bg-rose-50 text-rose-500;
+}

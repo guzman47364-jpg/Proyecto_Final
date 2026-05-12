@@ -1,0 +1,61 @@
+/* Proveedores.css o Marcas.css */
+@import "tailwindcss";
+
+
+.proveedores-container {
+    @apply p-8 bg-slate-50 min-h-screen;
+}
+
+.form-card {
+    @apply bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 mb-8 transition-all hover:shadow-md;
+}
+
+.form-card h2 {
+    @apply text-3xl font-black text-slate-900 mb-8 tracking-tight;
+}
+
+.form-grid {
+    @apply grid grid-cols-1 md:grid-cols-4 gap-6 items-end;
+}
+
+.input-field {
+    @apply flex flex-col gap-2;
+}
+
+.input-field label {
+    @apply text-xs font-bold text-slate-400 uppercase tracking-widest ml-1;
+}
+
+.input-field input {
+    @apply w-full bg-slate-50 border-2 border-slate-50 rounded-2xl px-4 py-3 
+           transition-all focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-50 outline-none;
+}
+
+.btn-save {
+    @apply bg-teal-500 text-white font-black py-4 px-8 rounded-2xl shadow-lg shadow-teal-100 
+           transition-all hover:bg-teal-600 active:scale-95 uppercase text-xs tracking-widest;
+}
+
+.custom-table {
+    @apply w-full border-separate border-spacing-y-3;
+}
+
+.custom-table th {
+    @apply px-6 py-2 text-xs font-bold text-slate-400 uppercase tracking-widest text-left;
+}
+
+.custom-table tbody tr {
+    @apply bg-white shadow-sm transition-transform hover:scale-[1.01];
+}
+
+.custom-table td {
+    @apply px-6 py-5 first:rounded-l-2xl last:rounded-r-2xl text-slate-600 font-medium;
+}
+
+.btn-edit {
+    @apply text-teal-600 font-bold hover:bg-teal-50 px-4 py-2 rounded-xl transition-all mr-2;
+}
+
+.btn-delete {
+    @apply text-rose-400 font-bold hover:bg-rose-50 hover:text-rose-600 px-4 py-2 rounded-xl transition-all;
+}

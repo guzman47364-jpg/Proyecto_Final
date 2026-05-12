@@ -31,3 +31,39 @@
     @apply absolute -top-1 -right-1 bg-red-500 text-white text-[10px] 
            font-bold px-1.5 py-0.5 rounded-full shadow-sm;
 }
+/* Fondo del Modal */
+.modal-overlay {
+    @apply fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-[999] p-4;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* El cuadro blanco (La tarjeta) */
+.modal-login-card {
+    @apply bg-white w-full max-w-sm rounded-[2rem] p-10 shadow-2xl relative text-center;
+    animation: slideUp 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+.close-x {
+    @apply absolute top-4 right-6 text-2xl text-gray-300 hover:text-gray-900 transition-colors;
+}
+
+.modal-input {
+    @apply w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-6 py-3.5 outline-none
+           focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-50 transition-all text-sm font-medium;
+}
+
+.btn-modal-submit {
+    @apply w-full bg-teal-500 text-white font-black py-4 rounded-2xl shadow-lg shadow-teal-100
+           hover:bg-teal-600 active:scale-95 transition-all mt-2 uppercase tracking-widest text-xs;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
