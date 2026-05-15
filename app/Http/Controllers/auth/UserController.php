@@ -49,6 +49,7 @@ class UserController extends Controller
                         'id'    => $row->id,
                         'name'  => $row->name,
                         'email' => $row->email,
+                        'direccion' => $row->direccion,
                         'roles' => $row->getRoleNames(), // <--- AGREGA ESTO
                     ];
                 });
@@ -61,40 +62,38 @@ class UserController extends Controller
     }
 
   
-    public function createUser(UsersCreateRequest $request){
-        DB::beginTransaction();
-        try {
-            $validated = $request->validated();
+    public function createUser(UsersCreateRequest $request) {
+    DB::beginTransaction();
+    try {
+        // En lugar de $request->validated(), usa $request->all() 
+        // o asegúrate de que 'rol' esté en las reglas del Request
+        $data = $request->all();
 
-            $user = User::create([
-                'name'=>$validated['name'],
-                'email'=>$validated['email'],
-                'password'=>Hash::make($validated['password'])
-            ]);
-            if($request->has('rol')){
-                $user->assignRole($validated['rol']);
-            }
-            
-            if($request->has('permisos')){
-                foreach($validated['permisos'] as $permiso){
-                    $user->givePermissionTo($permiso);
-                }
-            }
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'direccion' => $data['direccion'] ?? null,
+            // Deja que el Modelo se encargue del hash por el 'casts' 
+            // o quita el cast del modelo. Si lo dejas, solo pasa el texto plano:
+            'password' => $data['password'] 
+        ]);
 
-            Logs::create([
-                'action' => 'create_user',
-                'ip' => $request->ip(),
-                'data' => $user->id
-            ]);
-            DB::commit();
-            Cache::forget("api_users_page_1");
-            return $this->success('Usuario creado',200,$user);
-        } catch (\Exception $e) {
-            //throw $th;
-           DB::rollBack();
-            return $e->getMessage();
+        if($request->filled('rol')){
+            $user->assignRole($data['rol']);
         }
+        
+        // ... resto de tu lógica de permisos y logs ...
+
+        DB::commit();
+        Cache::forget("api_users_page_1");
+        return $this->success('Usuario creado', 200, $user);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        // Esto es lo que te dará el error real en la consola de Chrome
+        return response()->json(['message' => $e->getMessage()], 500);
     }
+}
 public function update(Request $request, $id)
 {
     try {
@@ -129,7 +128,6 @@ public function destroy($id)
     try {
         $user = User::findOrFail($id);
 
-        // Seguridad: Evitar que un Admin se borre a sí mismo
         if (auth()->id() == $id) {
             return response()->json([
                 'status' => 403,
@@ -137,11 +135,13 @@ public function destroy($id)
             ], 403);
         }
 
-        
-        $user->roles()->detach();
-        
-        // Eliminar el usuario
+        // 1. Borrado suave (SoftDelete)
         $user->delete();
+
+        // 2. ¡ESTO ES LO QUE FALTABA! Limpiar el caché de la lista
+        // Debes limpiar al menos la página 1, o todas si usas un tag
+        \Illuminate\Support\Facades\Cache::forget("api_users_page_1");
+        // Si usas más páginas, podrías necesitar un helper para limpiar todo el prefijo
 
         return response()->json([
             'status' => 200,

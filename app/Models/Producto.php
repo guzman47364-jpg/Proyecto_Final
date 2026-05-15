@@ -17,7 +17,8 @@ class Producto extends Model
     'stock',        
     'marca_id', 
     'categoria_id',
-    'proveedor_id'
+    'proveedor_id',
+    'imagen'
 ];
     // Relación con el Vendedor (Usuario)
     public function vendedor() {

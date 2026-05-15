@@ -53,7 +53,15 @@ Route::middleware('auth:api')->group(function () {
     Route::get('ventas', [VentaController::class, 'index'])
         ->middleware('rolePermission:Admin,Vendedor');
 
+// --- MÓDULO DE INVENTARIO (KARDEX) ---
+    // Esta es la que alimentará tu tabla en React
+    Route::get('inventarios', [App\Http\Controllers\Api\InventarioController::class, 'index'])
+        ->middleware('rolePermission:Admin'); 
 
+    // --- MÓDULO DE VENTAS ---
+    Route::post('ventas', [VentaController::class, 'store']);
+    Route::get('ventas', [VentaController::class, 'index'])
+        ->middleware('rolePermission:Admin,Vendedor');
     // --- GESTIÓN DE INVENTARIO (CRUD COMPLETO) ---
     
     // Productos

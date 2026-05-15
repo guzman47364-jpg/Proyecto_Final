@@ -4,23 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DetalleVenta extends Model
+class Venta extends Model
 {
-    protected $table = 'detalle_ventas'; 
+    protected $table = 'ventas'; 
 
     protected $fillable = [
-        'venta_id', 
-        'producto_id', 
-        'cantidad', 
-        'precio_unitario', 
-        'subtotal'
+        'user_id', 
+        'total', 
+        'estado', 
+        'metodo_pago'
     ];
 
-    public function venta() {
-        return $this->belongsTo(Venta::class, 'venta_id');
+    // Relación: Una venta tiene muchos detalles
+    public function detalles() {
+        return $this->hasMany(DetalleVenta::class, 'venta_id');
     }
 
-    public function producto() {
-        return $this->belongsTo(Producto::class, 'producto_id');
+    // Relación: Una venta pertenece a un usuario (cliente o admin)
+    public function cliente() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

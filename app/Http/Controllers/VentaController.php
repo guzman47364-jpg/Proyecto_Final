@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class VentaController extends Controller
 {
-    // Este método crea la venta y descuenta el stock
     public function store(Request $request)
     {
         $request->validate([
@@ -23,23 +22,21 @@ class VentaController extends Controller
         try {
             return DB::transaction(function () use ($request) {
                 $totalVenta = 0;
-                $lineasDetalle = [];
+                $detallesParaCrear = [];
 
+                // 1. Validar Stock y calcular totales antes de tocar la base de datos
                 foreach ($request->productos as $item) {
                     $producto = Producto::lockForUpdate()->find($item['id']);
 
-                    // Validar si hay suficiente stock
                     if ($producto->stock < $item['cantidad']) {
-                        throw new \Exception("Stock insuficiente para el producto: {$producto->nombre}");
+                        throw new \Exception("Stock insuficiente para: {$producto->nombre}");
                     }
 
                     $subtotal = $producto->precio * $item['cantidad'];
                     $totalVenta += $subtotal;
 
-                    // RESTAR STOCK
-                    $producto->decrement('stock', $item['cantidad']);
-
-                    $lineasDetalle[] = [
+                    // Guardamos los datos listos para insertar después
+                    $detallesParaCrear[] = [
                         'producto_id' => $producto->id,
                         'cantidad' => $item['cantidad'],
                         'precio_unitario' => $producto->precio,
@@ -47,18 +44,21 @@ class VentaController extends Controller
                     ];
                 }
 
-                // Crear la Venta (Cabecera)
+                // 2. Crear la Venta (Cabecera)
+                // En VentaController.php
                 $venta = Venta::create([
-                    'user_id' => Auth::id(), // El ID del comprador logueado
+                    'user_id' => auth()->user()->id, // Forzamos a que use el ID del token
                     'total' => $totalVenta,
                     'estado' => 'pagado',
-                    'metodo_pago' => $request->metodo_pago ?? 'tarjeta'
+                    'metodo_pago' => $request->metodo_pago ?? 'efectivo'
                 ]);
 
-                // Crear los detalles
-                foreach ($lineasDetalle as $detalle) {
+                // 3. Crear los detalles
+                // Al ejecutarse DetalleVenta::create, el OBSERVER se activará 
+                // automáticamente para restar stock y llenar el Kardex.
+                foreach ($detallesParaCrear as $detalle) {
                     $detalle['venta_id'] = $venta->id;
-                    DetalleVenta::create($detalle);
+                    DetalleVenta::create($detalle); 
                 }
 
                 return response()->json([
@@ -74,7 +74,6 @@ class VentaController extends Controller
         }
     }
 
-    // Para que el Vendedor o Admin vea el historial
     public function index()
     {
         return Venta::with(['cliente', 'detalles.producto'])->get();

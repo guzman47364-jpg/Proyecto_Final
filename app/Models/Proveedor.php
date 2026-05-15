@@ -11,10 +11,10 @@ class Proveedor extends Model
 
     protected $table = 'proveedores'; 
 
-  
     protected $fillable = [
         'nombre', 
         'telefono', 
+        'direccion', // <--- FALTABA ESTE
         'estado'
     ]; 
 }

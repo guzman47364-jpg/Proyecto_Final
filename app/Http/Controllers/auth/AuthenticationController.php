@@ -19,65 +19,73 @@ class AuthenticationController extends Controller
     /**
      * @operationId Register
      */
-    public function register(Request $request)
-    {
-        try {
-            $messages = [
-                'name.required' => 'El nombre es obligatorio.',
-                'email.required' => 'El correo es obligatorio.',
-                'email.email' => 'El correo no es válido.',
-                'email.unique' => 'Este correo ya está registrado.',
-                'password.required' => 'La contraseña es obligatoria.',
-                'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-                'password.confirmed' => 'Las contraseñas no coinciden.',
-            ];
+   public function register(Request $request)
+{
+    try {
+        $messages = [
+            'name.required' => 'El nombre es obligatorio.',
+            'email.required' => 'El correo es obligatorio.',
+            'email.email' => 'El correo no es válido.',
+            'email.unique' => 'Este correo ya está registrado.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'direccion.required' => 'La dirección de entrega es obligatoria.', // Nuevo mensaje
+        ];
 
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8|confirmed',
-            ], $messages);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'direccion' => 'required|string|max:500', // Nueva validación
+        ], $messages);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
-
-            $user->assignRole('Cliente');
-            
-            // Cargamos roles para que el frontend los reciba al registrarse
-            $user->load('roles', 'permissions');
-
-            $token = auth('api')->login($user);
-
-            $data = [
-                'status' => true,
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => auth('api')->factory()->getTTL() * 60,
-                'user' => $user,
-                'roles' => $user->getRoleNames(),
-                'permissions' => $user->getAllPermissions()->pluck('name')
-            ];
-
-            return $this->success('Usuario registrado exitosamente como Cliente', 201, $data);
-
-        } catch (\Throwable $th) {
+        if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error al registrar el usuario: ' . $th->getMessage()
-            ], 500);
+                'errors' => $validator->errors()
+            ], 422);
         }
-    }
 
+        // 1. Creamos el usuario con la dirección
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'direccion' => $request->direccion, // Campo agregado
+        ]);
+
+        // 2. Asignamos el rol de Cliente
+        $user->assignRole('Cliente');
+        
+        // 3. Disparar evento de verificación (Opcional por ahora)
+        // Si activás MustVerifyEmail en el modelo, esto enviará el correo automáticamente
+        // $user->sendEmailVerificationNotification();
+
+        $user->load('roles', 'permissions');
+
+        // Generamos el token de una vez para que entre logueado
+        $token = auth('api')->login($user);
+
+        $data = [
+            'status' => true,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
+            'user' => $user,
+            'roles' => $user->getRoleNames(),
+            'permissions' => $user->getAllPermissions()->pluck('name')
+        ];
+
+        return $this->success('Usuario registrado exitosamente como Cliente', 201, $data);
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Error al registrar el usuario: ' . $th->getMessage()
+        ], 500);
+    }
+}
    
     public function login(Request $request)
     {
