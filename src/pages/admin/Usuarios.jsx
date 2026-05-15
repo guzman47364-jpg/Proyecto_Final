@@ -4,7 +4,10 @@ import Swal from 'sweetalert2';
 
 const Usuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
-    const [form, setForm] = useState({ name: '', email: '', password: '', rol: 'Vendedor' });
+    // 1. Agregamos 'direccion' al estado inicial
+    const [form, setForm] = useState({ 
+        name: '', email: '', password: '', password_confirmation: '', rol: 'Vendedor', direccion: '' 
+    });
     const [loading, setLoading] = useState(false);
     const [paginacion, setPaginacion] = useState({});
     const [editingId, setEditingId] = useState(null); 
@@ -12,7 +15,6 @@ const Usuarios = () => {
     const loadUsers = async (page = 1) => {
         try {
             const res = await api.get(`/admin/usuarios?page=${page}`);
-            // Ajuste para leer la estructura de tu JSON { data: [...] }
             const userData = res.data.data || res.data;
             setUsuarios(userData);
             setPaginacion({
@@ -32,9 +34,10 @@ const Usuarios = () => {
             name: u.name,
             email: u.email,
             password: '', 
-            rol: typeof u.roles[0] === 'string' ? u.roles[0] : u.roles[0]?.name || 'Vendedor'
+            password_confirmation: '', 
+            rol: typeof u.roles[0] === 'string' ? u.roles[0] : u.roles[0]?.name || 'Vendedor',
+            direccion: u.direccion || '' // 2. Cargamos la dirección al editar
         });
-        // Desplazar hacia arriba para ver el formulario
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -53,21 +56,19 @@ const Usuarios = () => {
         if (result.isConfirmed) {
             try {
                 await api.delete(`/admin/usuarios/${id}`);
-                await loadUsers(); // <-- CORREGIDO: Antes decía fetchData()
-                Swal.fire('¡Borrado!', 'El usuario ha sido eliminado.', 'success');
+                await loadUsers(); 
+                Swal.fire('¡Borrado!', 'El usuario ha sido eliminado correctamente.', 'success');
             } catch (error) {
-                const mensajeError = error.response?.data?.message || "";
-                
-                // Manejo de error de llave foránea (Integridad referencial)
-                if (mensajeError.includes("Foreign key violation") || error.response?.status === 500) {
+                const mensajeServidor = error.response?.data?.message || "";
+                if (mensajeServidor.toLowerCase().includes("foreign key") || mensajeServidor.toLowerCase().includes("integrity")) {
                     Swal.fire({
                         icon: 'error',
                         title: 'No se puede eliminar',
-                        text: 'Este usuario tiene historial de ventas o productos asociados. Para mantener la integridad contable, no puede ser eliminado físicamente.',
+                        text: 'Este usuario tiene historial de ventas o productos asociados.',
                         confirmButtonColor: '#d33'
                     });
                 } else {
-                    Swal.fire('Error', 'No se pudo completar la acción', 'error');
+                    Swal.fire('Error', mensajeServidor || 'No se pudo completar la acción', 'error');
                 }
             }
         }
@@ -75,6 +76,16 @@ const Usuarios = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (form.password !== form.password_confirmation) {
+            return Swal.fire({
+                title: 'Error',
+                text: 'Las contraseñas no coinciden',
+                icon: 'error',
+                confirmButtonColor: '#d33',
+            });
+        }
+
         setLoading(true);
         try {
             if (editingId) {
@@ -96,7 +107,8 @@ const Usuarios = () => {
                 });
             }
             
-            setForm({ name: '', email: '', password: '', rol: 'Vendedor' });
+            // 3. Limpiamos incluyendo dirección
+            setForm({ name: '', email: '', password: '', password_confirmation: '', rol: 'Vendedor', direccion: '' });
             await loadUsers(); 
         } catch (error) {
              Swal.fire({
@@ -112,7 +124,7 @@ const Usuarios = () => {
 
     const cancelEdit = () => {
         setEditingId(null);
-        setForm({ name: '', email: '', password: '', rol: 'Vendedor' });
+        setForm({ name: '', email: '', password: '', password_confirmation: '', rol: 'Vendedor', direccion: '' });
     };
 
     return (
@@ -123,10 +135,25 @@ const Usuarios = () => {
                 <h3 className="text-lg font-bold mb-4 text-gray-700">
                     {editingId ? `Editando Usuario: ${form.name}` : 'Registrar Nuevo Personal'}
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                
+                {/* Ajusté el grid a col-span-2 para la dirección para que tenga más espacio */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <input className="border p-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none" type="text" placeholder="Nombre" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
                     <input className="border p-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none" type="email" placeholder="Email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} required />
-                    <input className="border p-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none" type="password" placeholder={editingId ? "Nueva pass (opcional)" : "Contraseña"} value={form.password} onChange={e => setForm({...form, password: e.target.value})} required={!editingId} />
+                    
+                    {/* Campo de DIRECCIÓN agregado al formulario */}
+                    <input 
+                        className="border p-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none lg:col-span-2" 
+                        type="text" 
+                        placeholder="Dirección completa" 
+                        value={form.direccion} 
+                        onChange={e => setForm({...form, direccion: e.target.value})} 
+                        required 
+                    />
+
+                    <input className="border p-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none" type="password" placeholder={editingId ? "Nueva pass" : "Contraseña"} value={form.password} onChange={e => setForm({...form, password: e.target.value})} required={!editingId} />
+                    <input className="border p-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none" type="password" placeholder="Confirmar pass" value={form.password_confirmation} onChange={e => setForm({...form, password_confirmation: e.target.value})} required={!editingId || form.password.length > 0} />
+
                     <select className="border p-2 rounded-lg text-sm bg-gray-50 font-semibold cursor-pointer" value={form.rol} onChange={e => setForm({...form, rol: e.target.value})}>
                         <option value="Vendedor">Vendedor</option>
                         <option value="Admin">Admin</option>
@@ -134,7 +161,7 @@ const Usuarios = () => {
                     </select>
                     
                     <div className="flex gap-2">
-                        <button type="submit" disabled={loading} className={`${editingId ? 'bg-orange-500' : 'bg-teal-500'} flex-1 text-white font-bold rounded-lg hover:opacity-80 transition-all disabled:opacity-50 h-10`}>
+                        <button type="submit" disabled={loading} className={`${editingId ? 'bg-orange-500' : 'bg-teal-500'} flex-1 text-white font-bold rounded-lg hover:opacity-80 transition-all disabled:opacity-50 h-10 uppercase text-xs tracking-widest`}>
                             {loading ? '...' : (editingId ? 'GUARDAR' : 'CREAR')}
                         </button>
                         {editingId && (
@@ -148,8 +175,8 @@ const Usuarios = () => {
                 <table className="w-full text-left">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase">Nombre</th>
-                            <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase">Email</th>
+                            <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase">Personal / Cliente</th>
+                            <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase">Dirección</th>
                             <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase">Roles</th>
                             <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase text-center">Acciones</th>
                         </tr>
@@ -157,11 +184,21 @@ const Usuarios = () => {
                     <tbody className="divide-y divide-gray-100">
                         {usuarios.length > 0 ? usuarios.map(u => (
                             <tr key={u.id} className="hover:bg-gray-50 transition-colors">
-                                <td className="px-6 py-4 font-bold text-gray-800">{u.name}</td>
-                                <td className="px-6 py-4 text-gray-600">{u.email}</td>
+                                <td className="px-6 py-4">
+                                    <div className="font-bold text-gray-800">{u.name}</div>
+                                    <div className="text-[10px] text-gray-400 font-medium">{u.email}</div>
+                                </td>
+                                {/* Mostramos la DIRECCIÓN en la tabla */}
+                                <td className="px-6 py-4 text-xs text-gray-500 italic max-w-xs truncate">
+                                    {u.direccion || '—'}
+                                </td>
                                 <td className="px-6 py-4">
                                     {u.roles?.map((r, index) => (
-                                        <span key={index} className="bg-teal-100 text-teal-700 px-2 py-1 rounded text-[10px] font-black uppercase mr-1">
+                                        <span key={index} className={`px-2 py-1 rounded text-[10px] font-black uppercase mr-1 ${
+                                            (typeof r === 'string' ? r : r.name) === 'Admin' 
+                                            ? 'bg-purple-100 text-purple-700' 
+                                            : 'bg-teal-100 text-teal-700'
+                                        }`}>
                                             {typeof r === 'string' ? r : r.name}
                                         </span>
                                     ))}
@@ -177,7 +214,7 @@ const Usuarios = () => {
                             </tr>
                         )) : (
                             <tr>
-                                <td colSpan="4" className="text-center py-10 text-gray-400">No se encontraron usuarios</td>
+                                <td colSpan="4" className="text-center py-10 text-gray-400 font-bold uppercase text-xs">No se encontraron usuarios</td>
                             </tr>
                         )}
                     </tbody>
@@ -186,8 +223,8 @@ const Usuarios = () => {
                 <div className="p-4 bg-gray-50 flex justify-between items-center text-xs font-bold text-gray-500 border-t border-gray-100">
                     <span>Página {paginacion.currentPage} de {paginacion.lastPage}</span>
                     <div className="flex gap-2">
-                        <button onClick={() => loadUsers(paginacion.currentPage - 1)} disabled={paginacion.currentPage === 1} className="px-3 py-1 bg-white border rounded shadow-sm disabled:opacity-30 hover:bg-gray-100 transition-colors">Ant.</button>
-                        <button onClick={() => loadUsers(paginacion.currentPage + 1)} disabled={paginacion.currentPage === paginacion.lastPage} className="px-3 py-1 bg-white border rounded shadow-sm disabled:opacity-30 hover:bg-gray-100 transition-colors">Sig.</button>
+                        <button onClick={() => loadUsers(paginacion.currentPage - 1)} disabled={paginacion.currentPage === 1} className="px-3 py-1 bg-white border rounded shadow-sm disabled:opacity-30 hover:bg-gray-100 transition-colors uppercase tracking-tighter">Ant.</button>
+                        <button onClick={() => loadUsers(paginacion.currentPage + 1)} disabled={paginacion.currentPage === paginacion.lastPage} className="px-3 py-1 bg-white border rounded shadow-sm disabled:opacity-30 hover:bg-gray-100 transition-colors uppercase tracking-tighter">Sig.</button>
                     </div>
                 </div>
             </div>

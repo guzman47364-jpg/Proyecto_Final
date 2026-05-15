@@ -7,6 +7,7 @@ import AdminLayout from './layouts/AdminLayout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 import Login from './pages/auth/Login';
+import Register from './pages/auth/Register'; // <--- 1. IMPORTAMOS EL REGISTRO
 
 // --- CAMBIO CLAVE: Renombramos los imports para que no choquen ---
 import ProductosShop from './pages/shop/Productos'; 
@@ -18,16 +19,32 @@ import Categorias from './pages/admin/Categorias';
 import Marcas from './pages/admin/Marcas';
 import InventarioKardex from './pages/admin/InventarioKardex';
 import Ventas from './pages/admin/Ventas';
+import ShopLayout from './layouts/ShopLayout';
+import CategoriasShop from './pages/shop/Categorias';
+import OfertasShop from './pages/shop/Ofertas';
+import CategoriaDetalle from './pages/shop/CategoriaDetalle';
+import Catalogo from './pages/shop/Catalogo';
 
 function App() {
   const { user } = useContext(AuthContext);
 
   return (
     <Routes>
-      {/* --- RUTA DE LA TIENDA (PÚBLICA) --- */}
-      <Route path="/shop" element={<><Navbar /><ProductosShop /></>} />
-      
-      <Route path="/login" element={<><Navbar /><Login /></>} />
+      {/* --- RUTAS DE LA TIENDA (LAYOUT PÚBLICO) --- */}
+      <Route path="/" element={<ShopLayout />}>
+        <Route index element={<Navigate to="/shop" />} />
+        
+        <Route path="shop" element={<ProductosShop />} />
+        <Route path="categorias" element={<CategoriasShop />} />
+        <Route path="ofertas" element={<OfertasShop />} />
+        <Route path="login" element={<Login />} />
+        
+        {/* --- 2. RUTA DE REGISTRO PARA CLIENTES --- */}
+        <Route path="registro" element={<Register />} /> 
+        
+        <Route path="categorias/:id" element={<CategoriaDetalle />} />
+        <Route path="catalogo" element={<Catalogo />} />
+      </Route>
 
       {/* --- RUTAS DE ADMINISTRACIÓN (PROTEGIDAS) --- */}
       <Route path="/admin" element={
@@ -39,17 +56,11 @@ function App() {
         <Route path="categorias" element={<Categorias />} />
         <Route path="marcas" element={<Marcas />} />
         <Route path="proveedores" element={<Proveedores />} />
-        
-        {/* Aquí usas el de ADMIN */}
         <Route path="productos" element={<ProductosAdmin />} />
-        
-        {/* Ojo: tenías 'inventario' repetido, dejemos uno para el Kardex */}
         <Route path="inventario" element={<InventarioKardex />} />
-        
         <Route path="ventas" element={<Ventas />} />
       </Route>
 
-      <Route path="/" element={<Navigate to="/shop" />} />
       <Route path="*" element={<div className="p-20 text-center font-bold text-gray-400">404 - No encontrado</div>} />
     </Routes>
   );

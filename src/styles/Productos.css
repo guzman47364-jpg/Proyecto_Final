@@ -1,51 +1,207 @@
+/* src/styles/Productos.css */
 @import "tailwindcss";
 
-/* El resto de tus estilos igual que antes */
+/* --- CONTENEDOR GENERAL --- */
 .shop-wrapper {
-    @apply bg-gray-50 min-h-screen py-8 px-4;
+    @apply bg-[#fcfcfc] min-h-screen;
+}
+
+/* --- HERO MODERNO (IMAGEN PRINCIPAL) --- */
+.hero-moderno-moda {
+    @apply relative w-full h-[650px] flex items-center justify-center text-center px-6 mb-16 overflow-hidden;
+    /* Imagen principal de la tienda con capa oscura para lectura */
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                      url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80');
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-content-moda {
+    @apply p-12 max-w-4xl transition-all duration-700 transform;
+}
+
+.hero-tag-moda {
+    @apply text-[11px] font-black tracking-[0.5em] uppercase text-teal-400 mb-6 block;
+}
+
+.hero-title-moda {
+    @apply text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8 text-white;
+}
+
+.hero-subtitle-moda {
+    @apply text-gray-200 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-medium;
+}
+
+.btn-hero-moda {
+    @apply bg-white text-black px-12 py-5 font-black uppercase text-xs tracking-[0.2em] 
+           hover:bg-teal-500 hover:text-white transition-all rounded-full shadow-2xl active:scale-95;
+}
+
+/* --- SECCIÓN DE PROMOCIONES (GRID) --- */
+.promo-grid-container {
+    @apply max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-24 px-6 -mt-24 relative z-10;
+}
+
+/* Banner Grande (Woman Selection) */
+.promo-main-moda {
+    @apply md:col-span-2 h-[500px] rounded-[3rem] relative overflow-hidden flex items-end p-12 
+           transition-all duration-500 hover:scale-[1.02] shadow-2xl;
+    background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), 
+                      url('https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80');
+    background-size: cover;
+    background-position: center;
+}
+
+.promo-info-moda {
+    @apply relative z-10 text-white;
+}
+
+.promo-title-moda {
+    @apply text-5xl font-black italic tracking-tighter mb-2;
+}
+
+.promo-text-moda {
+    @apply text-sm font-bold tracking-widest uppercase opacity-90;
+}
+
+/* Banners Laterales (Accesorios y Calzado) */
+.promo-side-stack {
+    @apply flex flex-col gap-6;
+}
+
+.promo-side-item-moda {
+    @apply h-full min-h-[238px] rounded-[3rem] flex items-center justify-center relative overflow-hidden 
+           cursor-pointer hover:shadow-2xl transition-all duration-500 hover:scale-[1.03];
+    background-size: cover;
+    background-position: center;
+}
+
+/* Imagen para Accesorios */
+.promo-side-item-moda.accesorios {
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                      url('https://images.unsplash.com/photo-1523206489230-c012c64b2b48?q=80');
+}
+
+/* Imagen para Calzado */
+.promo-side-item-moda.calzado {
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                      url('https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80');
+}
+
+.promo-side-text-moda {
+    @apply font-black text-2xl italic tracking-tighter text-white uppercase text-center px-4;
+}
+
+/* --- LISTADO DE PRODUCTOS (GRID DE 3) --- */
+.productos-section {
+    @apply max-w-7xl mx-auto px-6 pb-24;
 }
 
 .productos-grid {
-    @apply max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12;
 }
 
-.producto-card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden 
-           hover:shadow-xl transition-all duration-300 flex flex-col h-full;
+.producto-card-pro {
+    @apply bg-white rounded-[3rem] border border-gray-100 p-6 
+           hover:shadow-[0_30px_60px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col h-full;
 }
 
-.producto-img-placeholder {
-    @apply h-48 bg-gray-100 flex items-center justify-center text-4xl;
+.producto-img-container-pro {
+    @apply w-full h-[450px] bg-gray-50 rounded-[2.5rem] overflow-hidden relative mb-8 flex items-center justify-center;
 }
 
-.producto-info {
-    @apply p-5 flex flex-col flex-grow;
+.producto-img-foto {
+    @apply w-full h-full object-cover transition-transform duration-700 hover:scale-110;
 }
 
-.btn-compra {
-    @apply bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg 
-           transition-all active:scale-95 shadow-md shadow-teal-100;
+.producto-nombre-pro {
+    @apply text-2xl font-black tracking-tighter text-gray-900 mb-2 uppercase;
 }
 
-.tag-categoria {
-    @apply bg-teal-50 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase;
+.producto-precio-pro {
+    @apply text-3xl font-black text-teal-500;
 }
 
-/* Añade esto a tu Productos.css */
-
-.hero-tienda {
-    @apply bg-white py-16 px-4 text-center border-b border-gray-50 mb-10;
+/* --- BADGES Y ELEMENTOS --- */
+.stock-alert {
+    @apply absolute top-6 left-6 bg-red-500 text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full z-10 shadow-lg;
 }
 
-.titulo-hero {
-    @apply text-5xl font-black text-gray-900 tracking-tight mb-4;
+.badge-categoria-moda {
+    @apply text-[10px] font-black bg-gray-100 text-gray-400 px-4 py-1.5 rounded-full uppercase tracking-widest mb-3 inline-block;
 }
 
-.subtitulo-hero {
-    @apply text-gray-500 text-lg max-w-2xl mx-auto;
+.badge-stock-moda {
+    @apply text-[10px] font-black text-teal-600 bg-teal-50 px-4 py-1.5 rounded-full uppercase;
 }
 
-/* Ajuste para que los productos no se vean tan solos si hay pocos */
-.productos-grid {
-    @apply max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 px-4 pb-20;
+.badge-stock-moda.low {
+    @apply bg-red-50 text-red-500;
+}
+
+.btn-compra-pro {
+    @apply bg-gray-900 hover:bg-teal-500 text-white font-black py-4 px-8 rounded-2xl 
+           transition-all active:scale-95 shadow-lg flex items-center gap-2 text-xs uppercase tracking-widest;
+}
+
+/* --- CATÁLOGO Y FILTROS --- */
+.catalogo-container {
+    @apply max-w-7xl mx-auto flex flex-col md:flex-row gap-12 px-6 py-12;
+}
+
+.filters-sidebar {
+    @apply w-full md:w-64 flex-shrink-0 self-start sticky top-28;
+}
+
+.filters-card {
+    @apply bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm;
+}
+
+.filters-title {
+    @apply text-[11px] font-black uppercase tracking-[0.3em] text-gray-400 mb-8 block;
+}
+
+.filter-link {
+    @apply text-sm font-bold text-gray-400 py-3 text-left transition-all 
+           hover:text-teal-500 hover:translate-x-2 flex items-center gap-3 border-b border-gray-50;
+}
+
+.filter-link.active {
+    @apply text-teal-600 font-black border-teal-500 scale-105;
+}
+
+/* --- PAGINACIÓN --- */
+.pagination-wrapper {
+    @apply flex justify-center items-center gap-4 mt-20 mb-12;
+}
+
+.page-number {
+    @apply w-14 h-14 flex items-center justify-center rounded-full border-2 border-transparent
+           text-sm font-black transition-all cursor-pointer bg-gray-50 text-gray-400 hover:bg-teal-50 hover:text-teal-600;
+}
+
+.page-number.active {
+    @apply bg-gray-900 text-white shadow-2xl scale-110;
+}
+
+/* --- EL BOTÓN MÁS PEQUEÑO --- */
+.btn-compra-pro {
+    /* Reducimos padding y tamaño de fuente */
+    @apply bg-slate-900 hover:bg-teal-500 text-white font-black 
+           py-2 px-4 rounded-xl transition-all active:scale-95 
+           shadow-md flex items-center gap-2 text-[10px] uppercase tracking-widest;
+}
+
+/* Icono del carrito más pequeño */
+.btn-compra-pro span {
+    @apply text-xs;
+}
+.producto-nombre-pro {
+    /* Bajamos el tamaño a base (16px) o sm (14px) según prefieras */
+    @apply text-sm font-bold tracking-normal text-slate-800 uppercase leading-tight mb-2;
+}
+
+/* También ajustamos el contenedor de abajo para que no quede pegado */
+.producto-footer-pro {
+    @apply flex items-center justify-between mt-auto pt-2;
 }

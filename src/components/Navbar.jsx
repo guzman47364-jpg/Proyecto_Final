@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // 1. Importa useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
 import '../styles/Navbar.css';
@@ -7,43 +7,46 @@ import '../styles/Navbar.css';
 const Navbar = () => {
     const { user, login, logout } = useContext(AuthContext);
     const { totalItems } = useContext(CartContext);
-    const navigate = useNavigate(); // 2. Inicializa el hook de navegación
+    const navigate = useNavigate();
 
     const [showLogin, setShowLogin] = useState(false);
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
 
-   const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    
-    // Llamamos al login del contexto enviando el objeto {email, password}
-    const loggedUser = await login(credentials);
+    const handleLoginSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        
+        const loggedUser = await login(credentials);
 
-   if (loggedUser) {
-    setShowLogin(false);
-    
-    // Como usas Spatie (por el getRoleNames en tu PHP), 
-    // lo más seguro es que debas buscar en el array de roles:
-    const roles = loggedUser.roles; // Esto es un array si usas Spatie
-    const isAdmin = roles.some(r => r.name === 'Admin' || r.name === 'Vendedor');
+        if (loggedUser) {
+            setShowLogin(false);
+            
+            // Lógica de redirección basada en roles
+            const roles = loggedUser.roles; 
+            const isAdmin = roles.some(r => r.name === 'Admin' || r.name === 'Vendedor');
 
-    if (isAdmin) {
-        navigate('/admin/productos');
-    } else {
-        navigate('/shop');
-    }
+            if (isAdmin) {
+                navigate('/admin/productos');
+            } else {
+                navigate('/shop');
+            }
+        } else {
+            setError('Correo o contraseña incorrectos');
+        }
+    };
 
-    } else {
-        setError('Correo o contraseña incorrectos');
-    }
-};
+    // Función para ir al registro y cerrar el modal
+    const handleGoToRegister = () => {
+        setShowLogin(false);
+        navigate('/registro');
+    };
 
     return (
         <nav className="nav-tienda">
             <div className="nav-content">
-                <Link to="/shop" className="text-xl font-black tracking-tighter text-gray-800">
-                    MI<span className="text-teal-500">STORE</span>
+                <Link to="/shop" className="logo-text">
+                    F&B<span className="logo-accent">FASHION</span>
                 </Link>
 
                 <div className="nav-links">
@@ -53,29 +56,32 @@ const Navbar = () => {
                 </div>
 
                 <div className="nav-usuario-esquina">
-                    <div className="relative cursor-pointer hover:scale-110 transition-transform mr-2">
-                        <span className="text-2xl">🛒</span>
-                        {totalItems > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
-                                {totalItems}
-                            </span>
-                        )}
+                    <div className="cart-wrapper" onClick={() => navigate('/carrito')}>
+                        <span className="text-xl">🛒</span>
+                        {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
                     </div>
 
                     {user ? (
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-4">
                             {(user.rol === 'Admin' || user.rol === 'Vendedor') && (
-                                <Link to="/admin/productos" className="text-[10px] bg-slate-100 p-1 px-2 rounded-lg font-bold hover:bg-slate-200">PANEL</Link>
+                                <Link to="/admin/productos" className="panel-link">PANEL</Link>
                             )}
-                            <span className="text-xs font-bold text-gray-700">
-                                {user?.name || "Usuario"}
+                            <span className="user-tag">
+                                {user?.name?.split(' ')[0] || "Usuario"}
                             </span>
                             <button onClick={logout} className="btn-acceso !bg-red-500">Salir</button>
                         </div>
                     ) : (
-                        <button onClick={() => setShowLogin(true)} className="btn-acceso">
-                            Iniciar Sesión
-                        </button>
+                        <div className="flex gap-2">
+                            {/* BOTÓN REGISTRARSE (Visible fuera del modal) */}
+                            <button onClick={() => navigate('/registro')} className="btn-acceso !bg-transparent !text-gray-600 border border-gray-200">
+                                Registrarse
+                            </button>
+                            
+                            <button onClick={() => setShowLogin(true)} className="btn-acceso">
+                                Iniciar Sesión
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
@@ -84,34 +90,54 @@ const Navbar = () => {
                 <div className="modal-overlay" onClick={() => setShowLogin(false)}>
                     <div className="modal-login-card" onClick={(e) => e.stopPropagation()}>
                         <button className="close-x" onClick={() => setShowLogin(false)}>&times;</button>
-                        <h2 className="text-2xl font-black text-gray-900 mb-2">¡Bienvenido!</h2>
-                        <p className="text-gray-400 text-sm mb-6 font-medium">Ingresa tus credenciales para continuar</p>
+                        
+                        <div className="text-center mb-8">
+                            <h2 className="text-3xl font-black text-gray-900 tracking-tighter">¡Hola de nuevo!</h2>
+                            <p className="text-gray-400 text-xs font-medium mt-1">Ingresa a tu cuenta para continuar</p>
+                        </div>
 
                         <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
-                            <input 
-                                className="modal-input"
-                                type="email" 
-                                placeholder="Correo electrónico"
-                                value={credentials.email}
-                                onChange={(e) => setCredentials({...credentials, email: e.target.value})}
-                                required 
-                            />
-                            <input 
-                                className="modal-input"
-                                type="password" 
-                                placeholder="Contraseña"
-                                value={credentials.password}
-                                onChange={(e) => setCredentials({...credentials, password: e.target.value})}
-                                required 
-                            />
-                            {error && <p className="text-red-500 text-xs font-bold">{error}</p>}
+                            <div className="space-y-1">
+                                <label className="modal-label">Email</label>
+                                <input 
+                                    className="modal-input"
+                                    type="email" 
+                                    placeholder="tu@correo.com"
+                                    value={credentials.email}
+                                    onChange={(e) => setCredentials({...credentials, email: e.target.value})}
+                                    required 
+                                />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="modal-label">Contraseña</label>
+                                <input 
+                                    className="modal-input"
+                                    type="password" 
+                                    placeholder="••••••••"
+                                    value={credentials.password}
+                                    onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+                                    required 
+                                />
+                            </div>
+
+                            {error && <p className="error-message">{error}</p>}
+
                             <button type="submit" className="btn-modal-submit">
-                                Entrar a mi cuenta
+                                Entrar ahora
                             </button>
                         </form>
-                        <p className="mt-6 text-xs text-gray-400 font-medium">
-                            ¿Aún no tienes cuenta? <span className="text-teal-500 font-bold cursor-pointer">Regístrate aquí</span>
-                        </p>
+
+                        <div className="mt-8 text-center">
+                            <p className="text-[10px] text-gray-400 font-medium">
+                                ¿No tienes cuenta? <span 
+                                    onClick={handleGoToRegister} 
+                                    className="text-teal-500 font-black cursor-pointer hover:underline"
+                                >
+                                    Regístrate aquí
+                                </span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             )}

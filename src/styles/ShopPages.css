@@ -1,0 +1,28 @@
+/* src/styles/ShopPages.css */
+@import "tailwindcss";
+.shop-container {
+    @apply max-w-7xl mx-auto p-6 lg:p-10;
+}
+
+.title-section {
+    @apply text-3xl font-black mb-8 text-slate-800 tracking-tight;
+}
+
+/* Grid para las categorías dinámicas */
+.grid-categorias {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6;
+}
+
+.categoria-card-link {
+    @apply bg-white p-10 rounded-[2rem] shadow-sm border border-slate-100 
+           flex flex-col items-center justify-center transition-all 
+           hover:shadow-xl hover:border-teal-200 hover:-translate-y-2 cursor-pointer;
+}
+
+.categoria-icon {
+    @apply text-5xl mb-4 transition-transform duration-300;
+}
+
+.categoria-card-link:hover .categoria-icon {
+    @apply scale-110;
+}
