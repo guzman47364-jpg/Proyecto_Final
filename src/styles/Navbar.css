@@ -1,19 +1,21 @@
+/* src/styles/Navbar.css */
 @import "tailwindcss";
 
-/* --- Estructura Flotante --- */
+/* --- Estructura Flotante (Ahora transparente para que se vea la foto atrás) --- */
 .nav-tienda {
-    @apply sticky top-0 z-50 w-full px-4 py-4 transition-all duration-300;
+    @apply sticky top-0 z-50 w-full px-4 py-4 transition-all duration-300 bg-transparent;
 }
 
+/* --- Tu Cápsula Redondeada Original (¡Totalmente intacta!) --- */
 .nav-content {
-    @apply max-w-7xl mx-auto bg-white/70 backdrop-blur-md border border-white/40 
-           px-8 py-3 rounded-full flex items-center justify-between 
+    /* Cambiamos max-w-7xl por max-w-[92%] para que use el 92% de la pantalla */
+    @apply max-w-[92%] mx-auto bg-white/70 backdrop-blur-md border border-white/40 
+           px-10 py-3 rounded-full flex items-center justify-between 
            shadow-xl shadow-gray-200/20;
 }
-
 /* --- Brand --- */
 .logo-text {
-    @apply text-2xl font-black tracking-tighter text-gray-900;
+    @apply text-2xl font-black tracking-tighter text-gray-900 no-underline;
 }
 
 .logo-accent {
@@ -27,7 +29,7 @@
 
 .nav-links a {
     @apply text-xs font-black text-gray-500 hover:text-teal-500 
-           transition-colors tracking-widest uppercase;
+           transition-colors tracking-widest uppercase no-underline;
 }
 
 /* --- Carrito y Usuario --- */
@@ -51,7 +53,7 @@
 }
 
 .panel-link {
-    @apply text-[9px] font-black text-teal-600 hover:tracking-widest transition-all;
+    @apply text-[9px] font-black text-teal-600 hover:tracking-widest transition-all no-underline;
 }
 
 .btn-acceso {
@@ -60,7 +62,7 @@
            active:scale-95 shadow-lg shadow-gray-900/10;
 }
 
-/* --- MODAL LOGIN (El Cuadrito) --- */
+/* --- MODAL LOGIN --- */
 .modal-overlay {
     @apply fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm 
            flex items-center justify-center p-4;
@@ -86,7 +88,7 @@
 }
 
 .error-message {
-    @apply bg-red-50 text-red-500 text-[10px] font-bold p-3 rounded-xl text-center;
+    @apply bg-red-50 text-red-500 text-[10px] font-bold p-3 rounded-xl text-center mt-2;
 }
 
 .btn-modal-submit {

@@ -24,7 +24,7 @@ import CategoriasShop from './pages/shop/Categorias';
 import OfertasShop from './pages/shop/Ofertas';
 import CategoriaDetalle from './pages/shop/CategoriaDetalle';
 import Catalogo from './pages/shop/Catalogo';
-
+import Carrito from './pages/shop/Carrito';
 function App() {
   const { user } = useContext(AuthContext);
 
@@ -44,6 +44,7 @@ function App() {
         
         <Route path="categorias/:id" element={<CategoriaDetalle />} />
         <Route path="catalogo" element={<Catalogo />} />
+        <Route path="carrito" element={<Carrito />} />
       </Route>
 
       {/* --- RUTAS DE ADMINISTRACIÓN (PROTEGIDAS) --- */}

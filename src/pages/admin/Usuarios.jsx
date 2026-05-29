@@ -155,7 +155,7 @@ const Usuarios = () => {
                     <input className="border p-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none" type="password" placeholder="Confirmar pass" value={form.password_confirmation} onChange={e => setForm({...form, password_confirmation: e.target.value})} required={!editingId || form.password.length > 0} />
 
                     <select className="border p-2 rounded-lg text-sm bg-gray-50 font-semibold cursor-pointer" value={form.rol} onChange={e => setForm({...form, rol: e.target.value})}>
-                        <option value="Vendedor">Vendedor</option>
+                       
                         <option value="Admin">Admin</option>
                         <option value="Cliente">Cliente</option>
                     </select>

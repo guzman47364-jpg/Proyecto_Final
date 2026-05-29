@@ -27,9 +27,10 @@ const Productos = () => {
     const productosRecientes = listaProductos.slice(0, 6);
 
     return (
-        <div className="shop-wrapper">
+        // Usamos w-full de Tailwind para asegurar que el contenedor madre sea infinito
+        <div className="w-full min-h-screen bg-[#fcfcfc]">
             
-            {/* --- HERO --- */}
+            {/* --- HERO TOTALMENTE LIBRE (Sin wrappers que lo aprieten) --- */}
             <header className="hero-moderno-moda">
                 <div className="hero-content-moda">
                     <span className="hero-tag-moda">Colección Primavera 2026</span>
@@ -48,87 +49,93 @@ const Productos = () => {
                 </div>
             </header>
 
-            {/* --- PROMO GRID (Con Imágenes) --- */}
-            <section className="promo-grid-container">
-                <div 
-                    className="promo-main-moda"
-                    style={{ 
-                        backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80')" 
-                    }}
-                >
-                    <div className="promo-info-moda">
-                        <h2 className="promo-title-moda italic">WOMAN SELECTION</h2>
-                        <p className="promo-text-moda">HASTA 30% OFF EN VESTIDOS</p>
-                    </div>
-                </div>
-
-                <div className="promo-side-stack">
+            {/* --- AQUÍ RECIÉN ENVOLVEMOS EL RESTO EN EL CONTENEDOR CON MÁRGENES --- */}
+            {/* Esto garantiza que las promos y los productos queden centrados y estéticos */}
+            <div className="max-w-7xl mx-auto px-6">
+                
+                {/* --- PROMO GRID (Con Imágenes) --- */}
+                <section className="promo-grid-container">
                     <div 
-                        className="promo-side-item-moda"
+                        className="promo-main-moda"
                         style={{ 
-                            backgroundImage: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')" 
+                            backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80')" 
                         }}
                     >
-                        <span className="promo-side-text-moda">NUEVOS ACCESORIOS</span>
+                        <div className="promo-info-moda">
+                            <h2 className="promo-title-moda italic">WOMAN SELECTION</h2>
+                            <p className="promo-text-moda">HASTA 30% OFF EN VESTIDOS</p>
+                        </div>
                     </div>
 
-                    <div 
-                        className="promo-side-item-moda"
-                        style={{ 
-                            backgroundImage: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80')" 
-                        }}
-                    >
-                        <span className="promo-side-text-moda">CALZADO PRO</span>
+                    <div className="promo-side-stack">
+                        <div 
+                            className="promo-side-item-moda"
+                            style={{ 
+                                backgroundImage: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')" 
+                            }}
+                        >
+                            <span className="promo-side-text-moda">NUEVOS ACCESORIOS</span>
+                        </div>
+
+                        <div 
+                            className="promo-side-item-moda"
+                            style={{ 
+                                backgroundImage: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80')" 
+                            }}
+                        >
+                            <span className="promo-side-text-moda">CALZADO PRO</span>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* --- LISTADO RECIENTES --- */}
-            <main className="productos-section">
-                <div className="section-header-moda mb-10 text-center">
-                    <h2 className="text-4xl font-black tracking-tighter uppercase">
-                        Lo más <span className="text-teal-500">Reciente</span>
-                    </h2>
-                    <div className="w-20 h-1.5 bg-teal-500 mx-auto mt-4 rounded-full"></div>
-                </div>
+                {/* --- LISTADO RECIENTES --- */}
+                <main className="productos-section">
+                    <div className="section-header-moda mb-10 text-center">
+                        <h2 className="text-4xl font-black tracking-tighter uppercase">
+                            Lo más <span className="text-teal-500">Reciente</span>
+                        </h2>
+                        <div className="w-20 h-1.5 bg-teal-500 mx-auto mt-4 rounded-full"></div>
+                    </div>
 
-                <div className="productos-grid">
-                    {productosRecientes.map((item) => (
-                        <div key={item.id} className="producto-card-pro">
-                            <div className="producto-img-container-pro">
-                                {item.imagen ? (
-                                    <img 
-                                        src={`http://localhost:8000/storage/${item.imagen}`} 
-                                        className="producto-img-foto"
-                                        alt={item.nombre}
-                                    />
-                                ) : (
-                                    <div className="producto-img-placeholder">📦</div>
-                                )}
-                            </div>
+                    <div className="productos-grid">
+                        {productosRecientes.map((item) => (
+                            <div key={item.id} className="producto-card-pro">
+                                <div className="producto-img-container-pro">
+                                    {item.imagen ? (
+                                        <img 
+                                            src={`http://localhost:8000/storage/${item.imagen}`} 
+                                            className="producto-img-foto"
+                                            alt={item.nombre}
+                                        />
+                                    ) : (
+                                        <div className="producto-img-placeholder">📦</div>
+                                    )}
+                                </div>
 
-                            <div className="producto-info-pro flex-grow flex flex-col">
-                                <h3 className="producto-nombre-pro text-2xl mb-4">{item.nombre}</h3>
-                                <div className="flex items-center justify-between mt-auto">
-                                    <span className="producto-precio-pro text-3xl">${item.precio}</span>
-                                    <button onClick={() => addToCart(item)} className="btn-compra-pro">
-                                        Añadir 🛒
-                                    </button>
+                                <div className="producto-info-pro flex-grow flex flex-col">
+                                    <h3 className="producto-nombre-pro text-2xl mb-4">{item.nombre}</h3>
+                                    <div className="flex items-center justify-between mt-auto">
+                                        <span className="producto-precio-pro text-3xl">${item.precio}</span>
+                                        <button onClick={() => addToCart(item)} className="btn-compra-pro">
+                                            Añadir 🛒
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
 
-                <div className="text-center mt-16">
-                    <button 
-                        onClick={() => navigate('/catalogo')}
-                        className="border-2 border-gray-900 text-gray-900 px-10 py-4 rounded-full font-black text-xs uppercase tracking-widest hover:bg-gray-900 hover:text-white transition-all"
-                    >
-                        Ver todos los productos
-                    </button>
-                </div>
-            </main>
+                    <div className="text-center mt-16">
+                        <button 
+                            onClick={() => navigate('/catalogo')}
+                            className="border-2 border-gray-900 text-gray-900 px-10 py-4 rounded-full font-black text-xs uppercase tracking-widest hover:bg-gray-900 hover:text-white transition-all"
+                        >
+                            Ver todos los productos
+                        </button>
+                    </div>
+                </main>
+
+            </div>
         </div>
     );
 };

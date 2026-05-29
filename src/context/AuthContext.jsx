@@ -51,9 +51,10 @@ const login = async (credentials) => {
         
         return null;
     } catch (error) {
-        console.error("Error en Login:", error.response?.data);
-        return null;
-    }
+    // Al meterlo en JSON.stringify, te va a escupir los textos planos en la consola de un solo tiro
+    console.log("DETALLE REAL DEL RECHAZO:", JSON.stringify(error.response?.data, null, 2));
+    return null;
+}
 };
 
     const logout = () => {

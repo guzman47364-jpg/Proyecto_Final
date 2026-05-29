@@ -3,13 +3,26 @@
 
 /* --- CONTENEDOR GENERAL --- */
 .shop-wrapper {
-    @apply bg-[#fcfcfc] min-h-screen;
+    @apply bg-[#fcfcfc] min-h-screen w-full;
+    overflow-x: hidden; /* Evita que el truco de expansión genere barra horizontal abajo */
 }
 
 /* --- HERO MODERNO (IMAGEN PRINCIPAL) --- */
 .hero-moderno-moda {
-    @apply relative w-full h-[650px] flex items-center justify-center text-center px-6 mb-16 overflow-hidden;
-    /* Imagen principal de la tienda con capa oscura para lectura */
+    @apply relative flex items-center justify-center text-center px-6 mb-16 overflow-hidden;
+    
+    /* TRUCO MAESTRO DE BORDE A BORDE ABSOLUTO */
+    width: 100vw; /* El ancho físico total del monitor */
+    height: 650px; /* Tu altura deseada */
+    position: relative; /* Importante para el cálculo */
+    
+    /* Este cálculo es lo que rompe los contenedores padres */
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    
+    /* Tu imagen y degradado */
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
                       url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80');
     background-size: cover;
@@ -114,12 +127,19 @@
     @apply w-full h-full object-cover transition-transform duration-700 hover:scale-110;
 }
 
+/* Ajuste de Nombre de Producto (Tamaño ideal y estilizado) */
 .producto-nombre-pro {
-    @apply text-2xl font-black tracking-tighter text-gray-900 mb-2 uppercase;
+    @apply text-sm font-bold tracking-normal text-slate-800 uppercase leading-tight mb-2;
 }
 
+/* Ajuste de Precio */
 .producto-precio-pro {
     @apply text-3xl font-black text-teal-500;
+}
+
+/* Contenedor inferior de la tarjeta */
+.producto-footer-pro {
+    @apply flex items-center justify-between mt-auto pt-2;
 }
 
 /* --- BADGES Y ELEMENTOS --- */
@@ -139,9 +159,16 @@
     @apply bg-red-50 text-red-500;
 }
 
+/* Botón de compra optimizado (Más pequeño y estético) */
 .btn-compra-pro {
-    @apply bg-gray-900 hover:bg-teal-500 text-white font-black py-4 px-8 rounded-2xl 
-           transition-all active:scale-95 shadow-lg flex items-center gap-2 text-xs uppercase tracking-widest;
+    @apply bg-slate-900 hover:bg-teal-500 text-white font-black 
+           py-2 px-4 rounded-xl transition-all active:scale-95 
+           shadow-md flex items-center gap-2 text-[10px] uppercase tracking-widest;
+}
+
+/* Icono del carrito más pequeño */
+.btn-compra-pro span {
+    @apply text-xs;
 }
 
 /* --- CATÁLOGO Y FILTROS --- */
@@ -182,26 +209,4 @@
 
 .page-number.active {
     @apply bg-gray-900 text-white shadow-2xl scale-110;
-}
-
-/* --- EL BOTÓN MÁS PEQUEÑO --- */
-.btn-compra-pro {
-    /* Reducimos padding y tamaño de fuente */
-    @apply bg-slate-900 hover:bg-teal-500 text-white font-black 
-           py-2 px-4 rounded-xl transition-all active:scale-95 
-           shadow-md flex items-center gap-2 text-[10px] uppercase tracking-widest;
-}
-
-/* Icono del carrito más pequeño */
-.btn-compra-pro span {
-    @apply text-xs;
-}
-.producto-nombre-pro {
-    /* Bajamos el tamaño a base (16px) o sm (14px) según prefieras */
-    @apply text-sm font-bold tracking-normal text-slate-800 uppercase leading-tight mb-2;
-}
-
-/* También ajustamos el contenedor de abajo para que no quede pegado */
-.producto-footer-pro {
-    @apply flex items-center justify-between mt-auto pt-2;
 }
